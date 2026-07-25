@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Oaks of Woodlake — Security Equipment Interest Survey</title>
+<style>
+  :root{
+    --ink:#1F2E3D;
+    --ink-soft:#3E4C5A;
+    --paper:#F7F4EC;
+    --card:#FFFFFF;
+    --line:#DCD5C4;
+    --brass:#A9793F;
+    --brass-light:#F1E6D4;
+    --green:#3F6B4F;
+    --green-light:#E7EFE9;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.55;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:40px 20px 64px;
+  }
+  header{
+    text-align:left;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:18px;
+    margin-bottom:28px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--brass);
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:28px;
+    line-height:1.25;
+    margin:0 0 8px;
+    color:var(--ink);
+  }
+  .sub{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .notice{
+    background:var(--brass-light);
+    border-left:4px solid var(--brass);
+    padding:18px 20px;
+    margin-bottom:32px;
+  }
+  .notice h2{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin:0 0 12px;
+    color:#6B4E24;
+    font-weight:700;
+  }
+  .notice ol{
+    margin:0;
+    padding-left:20px;
+  }
+  .notice li{
+    font-size:14px;
+    color:#4A3A1E;
+    margin-bottom:8px;
+  }
+  .notice li:last-child{margin-bottom:0;}
+  .notice strong{color:#3A2C14;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:28px;
+  }
+  fieldset{
+    border:none;
+    margin:0 0 26px;
+    padding:0;
+  }
+  legend{
+    font-weight:600;
+    font-size:15px;
+    margin-bottom:12px;
+    color:var(--ink);
+    padding:0;
+  }
+  .hint{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:-8px 0 12px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  label.opt{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:14.5px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:5px;
+    cursor:pointer;
+    background:#FDFCF9;
+  }
+  label.opt:hover{
+    border-color:var(--brass);
+  }
+  label.opt input{
+    margin-top:3px;
+  }
+  input[type=text], input[type=email], textarea{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:5px;
+    font-size:14.5px;
+    font-family:inherit;
+    background:#FDFCF9;
+  }
+  textarea{min-height:70px; resize:vertical;}
+  .row-label{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:block;
+  }
+  button.submit{
+    width:100%;
+    padding:13px 16px;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  button.submit:hover{background:#33475A;}
+  button.submit:disabled{opacity:.6; cursor:not-allowed;}
+
+  .confirm{
+    display:none;
+    background:var(--green-light);
+    border:1px solid var(--green);
+    border-radius:6px;
+    padding:22px 24px;
+    text-align:left;
+  }
+  .confirm h2{
+    font-family:Georgia,serif;
+    font-size:19px;
+    margin:0 0 6px;
+    color:#254A34;
+  }
+  .confirm p{
+    font-size:14px;
+    color:#2C4F3B;
+    margin:0;
+  }
+
+  .foot{
+    margin-top:20px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+
+  .board-toggle{
+    margin-top:36px;
+    text-align:center;
+  }
+  .board-toggle button{
+    background:none;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    font-size:12.5px;
+    padding:6px 12px;
+    border-radius:4px;
+    cursor:pointer;
+  }
+  .board-panel{
+    display:none;
+    margin-top:14px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:18px 20px;
+    font-size:13.5px;
+  }
+  .board-panel h3{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin:0 0 10px;
+    color:var(--brass);
+  }
+  .stat-row{
+    display:flex;
+    justify-content:space-between;
+    padding:6px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .stat-row:last-child{border-bottom:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">The Oaks of Woodlake Condominium Association</p>
+    <h1>Group-rate security equipment — interest survey</h1>
+    <p class="sub">Following recent security incidents in the community, we're gauging interest in a group rate for fiber-backed security equipment before reaching out to vendors. This takes about 3–4 minutes.</p>
+  </header>
+
+  <div class="notice" style="background:#EAF0F5; border-left-color:#4A6C8C;">
+    <h2 style="color:#2C4A63;">Preview only — not yet collecting responses</h2>
+    <p style="font-size:14px; color:#2C4A63; margin:0;">This is a draft for board review. Submitting the form below will not save or send anything. Once approved, this will be activated and shared with residents in the newsletter.</p>
+  </div>
+
+  <div class="notice">
+    <h2>Before you begin — please read</h2>
+    <ol>
+      <li><strong>No cost to the Association.</strong> The HOA is only facilitating this process and doing the initial legwork. It is not purchasing equipment or spending community funds to subsidize or arrange a discount.</li>
+      <li><strong>No HOA liability or warranties.</strong> Any equipment purchase, contract, or monitoring service will be handled directly between you and the vendor. The HOA does not offer, manage, or back any equipment warranty or service guarantee.</li>
+      <li><strong>Completely voluntary.</strong> Participation is 100% optional.</li>
+    </ol>
+  </div>
+
+  <div class="card" id="formCard">
+    <form id="surveyForm">
+
+      <fieldset>
+        <legend>1. How interested are you in group-rate security equipment for your unit?</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="interest" value="Very interested" required> Very interested — I'd likely participate</label>
+          <label class="opt"><input type="radio" name="interest" value="Somewhat interested"> Somewhat interested — depends on price/details</label>
+          <label class="opt"><input type="radio" name="interest" value="Not interested right now"> Not interested right now</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2. What type of equipment would you consider? (select all that apply)</legend>
+        <div class="options">
+          <label class="opt"><input type="checkbox" name="equipment" value="Video doorbell / entry camera"> Video doorbell / entry camera</label>
+          <label class="opt"><input type="checkbox" name="equipment" value="Exterior security cameras"> Exterior security cameras</label>
+          <label class="opt"><input type="checkbox" name="equipment" value="Vehicle / carport monitoring"> Vehicle or carport monitoring</label>
+          <label class="opt"><input type="checkbox" name="equipment" value="Monitored alarm system"> Monitored alarm system</label>
+          <label class="opt"><input type="checkbox" name="equipment" value="Smart locks"> Smart locks</label>
+          <label class="opt"><input type="checkbox" name="equipment" value="Unsure"> Unsure / open to recommendations</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>3. What monthly cost range would you actually commit to (equipment + monitoring)?</legend>
+        <p class="hint">For reference, comparable professionally monitored, fiber-backed systems typically run $35–$75+/month per unit.</p>
+        <div class="options">
+          <label class="opt"><input type="radio" name="budget" value="$35-50/mo"> $35–50/month</label>
+          <label class="opt"><input type="radio" name="budget" value="$50-75/mo"> $50–75/month</label>
+          <label class="opt"><input type="radio" name="budget" value="$75-100/mo"> $75–100/month</label>
+          <label class="opt"><input type="radio" name="budget" value="Over $100/mo"> Over $100/month</label>
+          <label class="opt"><input type="radio" name="budget" value="Depends on the vendor quote"> Depends on the vendor quote</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>4. Do you have internet service at your unit?</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="internet" value="Yes, home internet" required> Yes, I have home internet (Wi-Fi/broadband)</label>
+          <label class="opt"><input type="radio" name="internet" value="Mobile data only"> No home internet — mobile data only</label>
+          <label class="opt"><input type="radio" name="internet" value="None"> No internet service at all</label>
+          <label class="opt"><input type="radio" name="internet" value="Not sure"> Not sure</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>5. Are you the owner of your unit, or do you rent?</legend>
+        <p class="hint">Installation on exterior walls or common elements may need owner authorization and board approval.</p>
+        <div class="options">
+          <label class="opt"><input type="radio" name="ownership" value="Owner-occupant" required> Owner, living in the unit</label>
+          <label class="opt"><input type="radio" name="ownership" value="Owner, non-occupant"> Owner, renting it out</label>
+          <label class="opt"><input type="radio" name="ownership" value="Renter"> Renter</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>6. Do you already have a security system in place?</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="existing_system" value="Yes, monitored" required> Yes, professionally monitored</label>
+          <label class="opt"><input type="radio" name="existing_system" value="Yes, unmonitored"> Yes, but not monitored (self-watched cameras, etc.)</label>
+          <label class="opt"><input type="radio" name="existing_system" value="No"> No system at all</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>7. Would you want professional installation, or install it yourself?</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="install_pref" value="Professional install" required> Professional install</label>
+          <label class="opt"><input type="radio" name="install_pref" value="Self install"> Self-install</label>
+          <label class="opt"><input type="radio" name="install_pref" value="No preference"> No preference / not sure</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>8. How many entry points would you want covered?</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="entry_points" value="Front door only" required> Front door only</label>
+          <label class="opt"><input type="radio" name="entry_points" value="Front door + patio/back"> Front door plus patio or back entry</label>
+          <label class="opt"><input type="radio" name="entry_points" value="Front door + carport/vehicle"> Front door plus carport or vehicle area</label>
+          <label class="opt"><input type="radio" name="entry_points" value="All of the above"> All of the above</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>9. If a group rate becomes available, how soon would you want it installed?</legend>
+        <div class="options">
+          <label class="opt"><input type="radio" name="timeline" value="As soon as possible" required> As soon as possible</label>
+          <label class="opt"><input type="radio" name="timeline" value="Within a few months"> Within a few months</label>
+          <label class="opt"><input type="radio" name="timeline" value="Just gauging interest for now"> Just gauging interest for now — no rush</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <label class="row-label">Unit number (optional — helps us gauge coverage across the community)</label>
+        <input type="text" name="unit" placeholder="e.g. 214">
+      </fieldset>
+
+      <fieldset>
+        <label class="row-label">Email (optional — only if you'd like updates as this moves forward)</label>
+        <input type="email" name="email" placeholder="name@email.com">
+      </fieldset>
+
+      <fieldset>
+        <label class="row-label">Anything else you'd like the board to know? (optional)</label>
+        <textarea name="comments" placeholder="Comments or questions"></textarea>
+      </fieldset>
+
+      <button type="submit" class="submit" id="submitBtn">Submit response</button>
+    </form>
+
+    <div class="confirm" id="confirmBox">
+      <h2>Thank you</h2>
+      <p>Your response has been recorded. No action is needed from you, and no purchase or commitment has been made. The board will follow up in the newsletter if a group rate moves forward.</p>
+    </div>
+  </div>
+
+  <p class="foot">Association-facilitated survey only. Equipment, pricing, and service terms are set entirely by the vendor.</p>
+
+</div>
+
+<script>
+document.getElementById('surveyForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  document.getElementById('formCard').querySelector('form').style.display = 'none';
+  document.getElementById('confirmBox').style.display = 'block';
+});
+
+</script>
+</body>
+</html>
