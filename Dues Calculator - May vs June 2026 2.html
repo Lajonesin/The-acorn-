@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Oaks — Dues Calculator (May vs June 2026)</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --ink: #123a3f;
+  --ink-soft: #3f6b70;
+  --navy: #0e7c8c;
+  --slate: #17a2b8;
+  --slate-2: #128fa3;
+  --gold: #d9a521;
+  --gold-light: #f0c94a;
+  --paper: #fdfaf0;
+  --card: #ffffff;
+  --card-soft: #eaf6f7;
+  --line: #cdeef0;
+  --c1: #0b6875;
+  --c2: #128fa3;
+  --c3: #17a2b8;
+  --c4: #5fc9d6;
+  --c5: #f0c94a;
+  --c6: #d9a521;
+  --c7: #a67c00;
+}
+body { font-family:'DM Sans', sans-serif; background:var(--paper); color:var(--ink); line-height:1.6; padding:20px; }
+.page { max-width:640px; margin:0 auto; }
+h1 { font-family:'Playfair Display', serif; font-weight:800; font-size:1.7rem; color:var(--ink); margin-bottom:4px; }
+.sub { font-size:0.9rem; color:var(--ink-soft); margin-bottom:20px; }
+.toggle-row { display:flex; gap:10px; margin-bottom:20px; }
+.toggle-btn {
+  flex:1; padding:14px; border-radius:12px; border:2px solid var(--line);
+  background:var(--card); font-family:inherit; font-size:0.95rem; font-weight:700;
+  color:var(--ink-soft); cursor:pointer; text-align:center;
+}
+.toggle-btn.active { border-color:var(--navy); background:var(--card-soft); color:var(--navy); }
+.toggle-btn .total { display:block; font-size:0.78rem; font-weight:400; margin-top:2px; }
+.warn-banner {
+  display:none; background:#fef8e4; border:1px solid var(--gold-light); border-radius:10px;
+  padding:12px 14px; font-size:0.85rem; color:#6b5010; margin-bottom:18px;
+}
+.warn-banner.show { display:block; }
+.input-card {
+  background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px; margin-bottom:20px;
+}
+.input-card label { font-size:0.85rem; font-weight:700; color:var(--ink-soft); display:block; margin-bottom:8px; }
+.input-card input {
+  width:100%; font-size:1.4rem; font-weight:700; padding:12px 14px; border-radius:10px;
+  border:2px solid var(--line); font-family:inherit; color:var(--ink);
+}
+.input-card input:focus { outline:none; border-color:var(--navy); }
+.cat-row {
+  display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line);
+}
+.cat-row:last-child { border-bottom:none; }
+.swatch { width:14px; height:14px; border-radius:4px; flex-shrink:0; }
+.cat-name { flex:1; font-size:0.92rem; font-weight:600; color:var(--ink); }
+.cat-pct { font-size:0.78rem; color:var(--ink-soft); }
+.cat-amt { font-size:1rem; font-weight:700; color:var(--navy); min-width:80px; text-align:right; }
+.total-row {
+  display:flex; justify-content:space-between; padding-top:16px; margin-top:6px; border-top:2px solid var(--ink);
+  font-weight:800; font-size:1.05rem;
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Where Your Dues Go</h1>
+  <div class="sub">The Oaks of Woodlake — comparing May vs. June 2026 actual operating expenses</div>
+
+  <div class="toggle-row">
+    <button class="toggle-btn active" id="btnMay" onclick="setMonth('may')">
+      May 2026
+      <span class="total">$164,723.54 total</span>
+    </button>
+    <button class="toggle-btn" id="btnJune" onclick="setMonth('june')">
+      June 2026
+      <span class="total">$168,786 (with estimates)</span>
+    </button>
+  </div>
+
+  <div class="warn-banner" id="juneWarn">
+    ⚠️ The two amounts marked "EST." below use May's actual billed amounts as the best available substitute, added on top of the official $139,300.93 total. Water & Sewer also came in about $13,000 lower in June than May — not sure if that's an actual figure or another transition issue.
+  </div>
+
+  <div class="input-card">
+    <label for="dues">Enter monthly dues amount ($)</label>
+    <input type="number" id="dues" value="700" min="0" step="1" oninput="render()">
+  </div>
+
+  <div class="input-card" id="breakdown"></div>
+
+</div>
+
+<script>
+var DATA = {
+  may: {
+    total: 164723.54,
+    cats: [
+      { name: 'Utilities', amt: 60176.99, color: 'var(--c1)' },
+      { name: 'Contract services', amt: 50623.75, color: 'var(--c5)' },
+      { name: 'Admin', amt: 29358.87, color: 'var(--c4)' },
+      { name: 'Reserve contribution', amt: 8333.00, color: 'var(--c2)' },
+      { name: 'Repairs', amt: 6969.17, color: 'var(--c6)' },
+      { name: 'Insurance', amt: 5469.35, color: 'var(--c3)' },
+      { name: 'Taxes', amt: 3792.41, color: 'var(--c7)' },
+    ]
+  },
+  june: {
+    total: 168785.66,
+    cats: [
+      { name: 'Utilities', amt: 46790.26, color: 'var(--c1)' },
+      { name: 'Contract services*', note: '(incl. $10,565 landscape + $18,920 trash, both est.)', amt: 50227.76, color: 'var(--c5)' },
+      { name: 'Admin', amt: 30002.70, color: 'var(--c4)' },
+      { name: 'Repairs', amt: 20154.26, color: 'var(--c6)' },
+      { name: 'Insurance', amt: 9335.40, color: 'var(--c3)' },
+      { name: 'Reserve contribution', amt: 8333.00, color: 'var(--c2)' },
+      { name: 'Taxes', amt: 3942.28, color: 'var(--c7)' },
+    ]
+  }
+};
+
+var currentMonth = 'may';
+
+function setMonth(m) {
+  currentMonth = m;
+  document.getElementById('btnMay').classList.toggle('active', m === 'may');
+  document.getElementById('btnJune').classList.toggle('active', m === 'june');
+  document.getElementById('juneWarn').classList.toggle('show', m === 'june');
+  render();
+}
+
+function render() {
+  var dues = parseFloat(document.getElementById('dues').value) || 0;
+  var data = DATA[currentMonth];
+  var html = '';
+  data.cats.forEach(function(c) {
+    var pct = c.amt / data.total;
+    var share = dues * pct;
+    var noteHtml = c.note ? '<div style="font-size:0.72rem; color:#a67c00; font-weight:600; margin-top:2px;">' + c.note + '</div>' : '';
+    html += '<div class="cat-row">' +
+      '<div class="swatch" style="background:' + c.color + '"></div>' +
+      '<div class="cat-name">' + c.name + '<div class="cat-pct">' + (pct*100).toFixed(1) + '%</div>' + noteHtml + '</div>' +
+      '<div class="cat-amt">$' + share.toFixed(2) + '</div>' +
+      '</div>';
+  });
+  html += '<div class="total-row"><span>Total monthly dues</span><span>$' + dues.toFixed(2) + '</span></div>';
+  document.getElementById('breakdown').innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
